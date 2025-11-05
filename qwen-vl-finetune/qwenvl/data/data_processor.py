@@ -28,6 +28,14 @@ IMAGE_TOKEN_INDEX = 151655
 VIDEO_TOKEN_INDEX = 151656
 DEFAULT_IMAGE_TOKEN = "<image>"
 DEFAULT_VIDEO_TOKEN = "<video>"
+MAX_SAMPLE_TOKENS = 7000
+
+
+class TokenLengthExceededError(Exception):
+    def __init__(self, seq_len: int, limit: int):
+        super().__init__(f"Sample token length {seq_len} exceeds limit {limit}.")
+        self.seq_len = seq_len
+        self.limit = limit
 
 local_rank = None
 
@@ -525,6 +533,9 @@ class LazySupervisedDataset(Dataset):
         self.data_args = data_args
         self.merge_size = getattr(processor.image_processor, "merge_size", 2)
         self.list_data_dict = list_data_dict
+        self.max_tokens_per_sample = getattr(
+            data_args, "max_tokens_per_sample", MAX_SAMPLE_TOKENS
+        )
         self._invalid_sample_indices: Set[int] = set()
 
         raw_conf_path = getattr(self.data_args, "aoss_conf_path", None) or os.getenv(
@@ -627,6 +638,8 @@ class LazySupervisedDataset(Dataset):
                 return sample
             except FileNotFoundError:
                 raise
+            except TokenLengthExceededError:
+                raise
             except Exception as e:
                 last_exception = e
                 # sleep 1s in case it is a cloud disk issue
@@ -646,6 +659,8 @@ class LazySupervisedDataset(Dataset):
                     return sample
                 except FileNotFoundError:
                     raise
+                except TokenLengthExceededError:
+                    raise
                 except Exception as e:
                     last_exception = e
                     # no need to sleep
@@ -661,6 +676,8 @@ class LazySupervisedDataset(Dataset):
         try:
             sample = self.item_fn(sources)
             return sample
+        except TokenLengthExceededError:
+            raise
         except Exception as e:
             raise e
 
@@ -681,6 +698,15 @@ class LazySupervisedDataset(Dataset):
 
             try:
                 return self._fetch_with_retries(idx)
+            except TokenLengthExceededError as err:
+                self._invalid_sample_indices.add(idx)
+                checked.add(idx)
+                print(
+                    f"[Skip] Sample {idx} token length {err.seq_len} exceeds limit {err.limit}. "
+                    "Skipping this sample."
+                )
+                idx = (idx + 1) % dataset_size
+                continue
             except FileNotFoundError as err:
                 import traceback
                 traceback.print_exc()
@@ -710,6 +736,8 @@ class LazySupervisedDataset(Dataset):
         )
 
         seq_len = data_dict["input_ids"][0].size(0)
+        if seq_len > self.max_tokens_per_sample:
+            raise TokenLengthExceededError(seq_len, self.max_tokens_per_sample)
 
         if "image_grid_thw" in data_dict:
             grid_thw = data_dict.get("image_grid_thw")

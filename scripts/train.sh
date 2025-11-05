@@ -132,7 +132,7 @@ torchrun \
     --optim adamw_torch \
     --model_max_length 4096 \
     --data_flatten True \
-    --data_packing True \
+    --data_packing False \
     --max_pixels $((576*28*28)) \
     --min_pixels $((16*28*28)) \
     --video_fps 2 \
