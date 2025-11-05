@@ -23,6 +23,23 @@ class DataArguments:
     video_max_pixels: int = field(default=1024 * 28 * 28)
     video_min_pixels: int = field(default=256 * 28 * 28)
     video_fps: float = 2
+    aoss_conf_path: Optional[str] = field(
+        default=None,
+        metadata={"help": "Path to the default AOSS configuration file for S3 media access."},
+    )
+    aoss_conf_rules: Optional[str] = field(
+        default=None,
+        metadata={
+            "help": (
+                "Pattern-based AOSS configuration overrides. Accepts JSON or 'pattern::conf_path' pairs "
+                "separated by ';;'."
+            )
+        },
+    )
+    media_cache_dir: Optional[str] = field(
+        default=None,
+        metadata={"help": "Directory to cache media fetched from remote storage (e.g., s3)."},
+    )
 
 
 @dataclass

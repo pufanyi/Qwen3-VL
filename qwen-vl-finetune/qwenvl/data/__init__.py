@@ -1,4 +1,8 @@
+import json
+import os
 import re
+from functools import lru_cache
+from pathlib import Path
 
 # Define placeholders for dataset paths
 CAMBRIAN_737K = {
@@ -35,6 +39,50 @@ data_dict = {
 }
 
 
+@lru_cache(maxsize=1)
+def _external_data_dict():
+    """Load additional dataset definitions from a JSON config file if available."""
+    config_path = os.getenv("QWENVL_DATA_CONFIG")
+    if not config_path:
+        repo_root = Path(__file__).resolve().parents[3]
+        default_path = repo_root / "scripts" / "data.json"
+        if default_path.exists():
+            config_path = str(default_path)
+    if not config_path:
+        return {}
+
+    config_file = Path(config_path).expanduser().resolve()
+    if not config_file.exists():
+        raise FileNotFoundError(f"Dataset config file not found: {config_file}")
+
+    with config_file.open("r", encoding="utf-8") as f:
+        raw_config = json.load(f)
+
+    extra_dict = {}
+    for name, cfg in raw_config.items():
+        annotation = cfg.get("annotation") or cfg.get("annotation_path")
+        if not annotation:
+            raise ValueError(
+                f"`annotation` field is required for dataset '{name}' in {config_file}"
+            )
+        data_path = cfg.get("root") or cfg.get("data_path", "")
+        extra_cfg = {
+            "annotation_path": annotation,
+            "data_path": data_path,
+        }
+        # Keep optional keys to allow downstream components to consume them if needed.
+        for optional_key in (
+            "repeat_time",
+            "length",
+            "data_augment",
+            "max_dynamic_patch",
+        ):
+            if optional_key in cfg:
+                extra_cfg[optional_key] = cfg[optional_key]
+        extra_dict[name] = extra_cfg
+    return extra_dict
+
+
 def parse_sampling_rate(dataset_name):
     match = re.search(r"%(\d+)$", dataset_name)
     if match:
@@ -43,12 +91,13 @@ def parse_sampling_rate(dataset_name):
 
 
 def data_list(dataset_names):
+    available_data = {**data_dict, **_external_data_dict()}
     config_list = []
     for dataset_name in dataset_names:
         sampling_rate = parse_sampling_rate(dataset_name)
         dataset_name = re.sub(r"%(\d+)$", "", dataset_name)
-        if dataset_name in data_dict.keys():
-            config = data_dict[dataset_name].copy()
+        if dataset_name in available_data:
+            config = available_data[dataset_name].copy()
             config["sampling_rate"] = sampling_rate
             config_list.append(config)
         else:

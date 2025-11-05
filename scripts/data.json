@@ -1,0 +1,651 @@
+{
+    "ego-exo_sparce_cot_v1": {
+        "root": "",
+        "annotation": "/mnt/aigc/zhoutongxi/PT-COT/EGO-EXO/ego_exo_gpt_5_v2_no_COT.jsonl",
+        "data_augment": false,
+        "max_dynamic_patch": 12,
+        "repeat_time": 3,
+        "length": 27450
+    },
+    "cogmap_two_images_v2_one_object_absolute": {
+        "root": "s3://multimodal-processed/Multi-3D-Object/MultiSpa",
+        "annotation": "/mnt/aigc/xujunxiang/Data/cogmap/data_one_object_QA_absolute_no_COT_reformat_question.jsonl",
+        "data_augment": false,
+        "max_dynamic_patch": 12,
+        "repeat_time": 1,
+        "length": 33139
+    },
+    "cogmap_two_images_v2_one_object_angle": {
+        "root": "s3://multimodal-processed/Multi-3D-Object/MultiSpa",
+        "annotation": "/mnt/aigc/xujunxiang/Data/cogmap/data_one_object_QA_angle_no_COT_reformat_question.jsonl",
+        "data_augment": false,
+        "max_dynamic_patch": 12,
+        "repeat_time": 1,
+        "length": 32749
+    },
+    "cogmap_two_images_v2_one_object_relative": {
+        "root": "s3://multimodal-processed/Multi-3D-Object/MultiSpa",
+        "annotation": "/mnt/aigc/xujunxiang/Data/cogmap/data_one_object_QA_relative_no_COT_reformat_question.jsonl",
+        "data_augment": false,
+        "max_dynamic_patch": 12,
+        "repeat_time": 1,
+        "length": 33646
+    },
+    "cogmap_two_images_v2_two_object_absolute": {
+        "root": "s3://multimodal-processed/Multi-3D-Object/MultiSpa",
+        "annotation": "/mnt/aigc/xujunxiang/Data/cogmap/data_two_object_QA_absolute_no_COT_reformat_question.jsonl",
+        "data_augment": false,
+        "max_dynamic_patch": 12,
+        "repeat_time": 1,
+        "length": 15067
+    },
+    "cogmap_two_images_v2_two_object_relative": {
+        "root": "s3://multimodal-processed/Multi-3D-Object/MultiSpa",
+        "annotation": "/mnt/aigc/xujunxiang/Data/cogmap/data_two_object_QA_relative_no_COT_reformat_question.jsonl",
+        "data_augment": false,
+        "max_dynamic_patch": 12,
+        "repeat_time": 1,
+        "length": 15892
+    },
+    "cogmap_two_images_v2_three_object_absolute": {
+        "root": "s3://multimodal-processed/Multi-3D-Object/MultiSpa",
+        "annotation": "/mnt/aigc/xujunxiang/Data/cogmap/data_three_object_QA_absolute_no_COT_reformat_question.jsonl",
+        "data_augment": false,
+        "max_dynamic_patch": 12,
+        "repeat_time": 1,
+        "length": 11459
+    },
+    "cogmap_two_images_v2_three_object_relative": {
+        "root": "s3://multimodal-processed/Multi-3D-Object/MultiSpa",
+        "annotation": "/mnt/aigc/xujunxiang/Data/cogmap/data_three_object_QA_relative_no_COT_reformat_question.jsonl",
+        "data_augment": false,
+        "max_dynamic_patch": 12,
+        "repeat_time": 1,
+        "length": 12145
+    },
+    "cogmap_two_images_v2_four_object_absolute": {
+        "root": "s3://multimodal-processed/Multi-3D-Object/MultiSpa",
+        "annotation": "/mnt/aigc/xujunxiang/Data/cogmap/data_four_object_QA_absolute_no_COT_reformat_question.jsonl",
+        "data_augment": false,
+        "max_dynamic_patch": 12,
+        "repeat_time": 1,
+        "length": 939
+    },
+    "cogmap_two_images_v2_camera_movement": {
+        "root": "s3://multimodal-processed/Multi-3D-Object/MultiSpa",
+        "annotation": "/mnt/aigc/xujunxiang/Data/cogmap/data_camera_movement_QA_no_COT_reformat_question.jsonl",
+        "data_augment": false,
+        "max_dynamic_patch": 12,
+        "repeat_time": 1,
+        "length": 49702
+    },
+    "cogmap_two_images_v2_camera_rotation": {
+        "root": "s3://multimodal-processed/Multi-3D-Object/MultiSpa",
+        "annotation": "/mnt/aigc/xujunxiang/Data/cogmap/data_camera_rotation_QA_no_COT_reformat_question.jsonl",
+        "data_augment": false,
+        "max_dynamic_patch": 12,
+        "repeat_time": 1,
+        "length": 42292
+    },
+    "mindcube_rot": {
+        "root": "s3://multimodal-processed/Multi-3D-Object/Matterport3D",
+        "annotation": "/mnt/aigc/xujunxiang/Data/Matterport3D_mindcube_COT_no_COT_reformat_question.jsonl",
+        "data_augment": false,
+        "max_dynamic_patch": 12,
+        "repeat_time": 1,
+        "length": 10920
+    },
+    "scannet_cot_cannot_determined_v2_0": {
+        "root": "s3://multimodal-processed/Multi-3D-Object/MultiSpa",
+        "annotation": "/mnt/aigc/xujunxiang/Data/data_one_object_COT_overlap_0_v1_no_COT_reformat_question.jsonl",
+        "data_augment": false,
+        "max_dynamic_patch": 12,
+        "repeat_time": 0.5,
+        "length": 11000
+    },
+    "scannet_cot_cannot_determined_v2_1": {
+        "root": "s3://multimodal-processed/Multi-3D-Object/MultiSpa",
+        "annotation": "/mnt/aigc/xujunxiang/Data/data_two_object_COT_overlap_0_v1_no_COT_reformat_question.jsonl",
+        "data_augment": false,
+        "max_dynamic_patch": 12,
+        "repeat_time": 0.5,
+        "length": 11000
+    },
+    "scannet_cot_cannot_determined_v2_2": {
+        "root": "s3://multimodal-processed/Multi-3D-Object/MultiSpa",
+        "annotation": "/mnt/aigc/xujunxiang/Data/data_three_object_COT_overlap_0_v1_no_COT_reformat_question.jsonl",
+        "data_augment": false,
+        "max_dynamic_patch": 12,
+        "repeat_time": 0.5,
+        "length": 8115
+    },
+    "messytable_cot_v1": {
+        "root": "s3://multimodal-processed/Multi-3D-Object/MessyTable",
+        "annotation": "/mnt/aigc/zoedatasets/mllm/trainset_jsonl/MessyTable/questions_jsonl/messytable_train_10k_which_same_scene_wcot_no_COT_reformat_question.jsonl",
+        "data_augment": false,
+        "max_dynamic_patch": 12,
+        "repeat_time": 1,
+        "length": 10000
+    },
+    "messytable_cot_v2": {
+        "root": "s3://multimodal-processed/Multi-3D-Object/MessyTable",
+        "annotation": "/mnt/aigc/zoedatasets/mllm/trainset_jsonl/MessyTable/questions_jsonl/train_10k_which_obj_in_scene_wcot_no_COT_reformat_question.jsonl",
+        "data_augment": false,
+        "max_dynamic_patch": 12,
+        "repeat_time": 1,
+        "length": 10000
+    },
+    "messytable_cot_v3": {
+        "root": "s3://multimodal-processed/Multi-3D-Object/MessyTable",
+        "annotation": "/mnt/aigc/zoedatasets/mllm/trainset_jsonl/MessyTable/questions_jsonl/train_10k_horizontal_rotation_wcot_no_COT_reformat_question.jsonl",
+        "data_augment": false,
+        "max_dynamic_patch": 12,
+        "repeat_time": 1,
+        "length": 10000
+    },
+    "1015_vsi_rel_dir_twoimages": {
+        "root": "s3://multimodal-processed/Multi-3D-Object/MultiSpa",
+        "annotation": "/mnt/aigc/xujunxiang/Data/data_correspond_zta_filtered_no_COT_reformat_question.jsonl",
+        "data_augment": false,
+        "max_dynamic_patch": 12,
+        "repeat_time": 1,
+        "length": 59546
+    },
+    "1015_vsi_rel_dir_v5_fixed": {
+        "root": "s3://multimodal-processed/Multi-3D-Object/MultiSpa",
+        "annotation": "/mnt/aigc/xujunxiang/Data/data_multi_view_relative_QA_v2_fixed_filtered_no_COT_reformat_question.jsonl",
+        "data_augment": false,
+        "max_dynamic_patch": 12,
+        "repeat_time": 1,
+        "length": 103438
+    },
+    "1025_mindcube_10k": {
+        "root": "/mnt/aigc/users/pufanyi/workspace/rot-data/data/data/data",
+        "annotation": "/mnt/aigc/users/pufanyi/workspace/rot-data/data/data/data/MindCube_train_instructions_qa.jsonl",
+        "data_augment": false,
+        "max_dynamic_patch": 12,
+        "repeat_time": 1,
+        "length": 10000
+    },
+    "site_maze_cot_v1_0": {
+        "root": "",
+        "annotation": "/mnt/aigc/zhoutongxi/PT-COT/maze/maze_dataset/maze_dataset_batch_00_turn_cot_no_COT_reformat_question.jsonl",
+        "data_augment": false,
+        "max_dynamic_patch": 12,
+        "repeat_time": 1,
+        "length": 3000
+    },
+    "site_maze_cot_v1_1": {
+        "root": "",
+        "annotation": "/mnt/aigc/zhoutongxi/PT-COT/maze/maze_dataset/maze_dataset_batch_00_turn_sequence_cot_no_COT_reformat_question.jsonl",
+        "data_augment": false,
+        "max_dynamic_patch": 12,
+        "repeat_time": 1,
+        "length": 3000
+    },
+    "site_maze_cot_v1_2": {
+        "root": "",
+        "annotation": "/mnt/aigc/zhoutongxi/PT-COT/maze/maze_dataset/maze_dataset_batch_00_position_cot_no_COT_reformat_question.jsonl",
+        "data_augment": false,
+        "max_dynamic_patch": 12,
+        "repeat_time": 1,
+        "length": 3000
+    },
+    "detect_multi_chat": {
+        "root": "",
+        "annotation": "/mnt/aigc/zoedatasets/mllm/trainset_jsonl/fanyi_grounding/detect_multi_chat_modified.jsonl",
+        "data_augment": false,
+        "max_dynamic_patch": 12,
+        "repeat_time": 0.5,
+        "length": 100000
+    },
+    "detect_multi_object_chat": {
+        "root": "",
+        "annotation": "/mnt/aigc/zoedatasets/mllm/trainset_jsonl/fanyi_grounding/detect_multi_object_chat_modified.jsonl",
+        "data_augment": false,
+        "max_dynamic_patch": 12,
+        "repeat_time": 0.5,
+        "length": 100000
+    },
+    "detect_single_chat": {
+        "root": "",
+        "annotation": "/mnt/aigc/zoedatasets/mllm/trainset_jsonl/fanyi_grounding/detect_single_chat_modified.jsonl",
+        "data_augment": false,
+        "max_dynamic_patch": 12,
+        "repeat_time": 0.5,
+        "length": 100000
+    },
+    "VSR": {
+        "root": "s3://multimodal-processed/Multi-3D-Object/VSR/",
+        "annotation": "/mnt/aigc/zoedatasets/mllm/trainset_jsonl/VSR/questions_jsonl/vsr_random_train_site.jsonl",
+        "data_augment": false,
+        "max_dynamic_patch": 12,
+        "repeat_time": 1,
+        "length": 7680,
+        "status": "简答 true false 改成了选择题 A B"
+    },
+    "SPEC_image2text": {
+        "root": "s3://multimodal-processed/Multi-3D-Object/SPEC/",
+        "annotation": "/mnt/aigc/zoedatasets/mllm/trainset_jsonl/SPEC/questions_jsonl/SPEC_image2text_site.jsonl",
+        "data_augment": false,
+        "max_dynamic_patch": 12,
+        "repeat_time": 1,
+        "length": 15000,
+        "status": "从0 1 2 3 改成 A B C D 。选项只剩A B C D，随机drop掉多余选项。"
+    },
+    "SPEC_text2image": {
+        "root": "s3://multimodal-processed/Multi-3D-Object/SPEC/",
+        "annotation": "/mnt/aigc/zoedatasets/mllm/trainset_jsonl/SPEC/questions_jsonl/SPEC_text2image_site.jsonl",
+        "data_augment": false,
+        "max_dynamic_patch": 12,
+        "repeat_time": 1,
+        "length": 15000,
+        "status": "从0 1 2 3 改成 A B C D 。选项只剩A B C D，随机drop掉多余选项。image list也做了同步更新"
+    },
+    "Super-CLEVR": {
+        "root": "s3://multimodal-processed/Multi-3D-Object/Super-CLEVR/",
+        "annotation": "/mnt/aigc/zoedatasets/mllm/trainset_jsonl/Super-CLEVR/questions_jsonl/superCLEVR_questions_30k_NoRedundant.jsonl",
+        "data_augment": false,
+        "max_dynamic_patch": 12,
+        "repeat_time": 1,
+        "length": 300000
+    },
+    "CLEVR_v1.0": {
+        "root": "s3://multimodal-processed/Multi-3D-Object/CLEVR_v1.0/",
+        "annotation": "/mnt/aigc/zoedatasets/mllm/trainset_jsonl/CLEVR_v1.0/questions_jsonl/CLEVR_train_questions.jsonl",
+        "data_augment": false,
+        "max_dynamic_patch": 12,
+        "repeat_time": 1,
+        "length": 699989
+    },
+    "CLEVR_CoGenT_v1.0": {
+        "root": "s3://multimodal-processed/Multi-3D-Object/CLEVR_CoGenT_v1.0/",
+        "annotation": "/mnt/aigc/zoedatasets/mllm/trainset_jsonl/CLEVR_CoGenT_v1.0/questions_jsonl/CLEVR_trainA_questions.jsonl",
+        "data_augment": false,
+        "max_dynamic_patch": 12,
+        "repeat_time": 1,
+        "length": 699960
+    },
+    "SAT": {
+        "root": "s3://multimodal-processed/Multi-3D-Object/SAT/",
+        "annotation": "/mnt/aigc/zoedatasets/mllm/trainset_jsonl/SAT/questions_jsonl/SAT_train.jsonl",
+        "data_augment": false,
+        "max_dynamic_patch": 12,
+        "repeat_time": 1,
+        "length": 172384
+    },
+    "GQA_train_batch_balanced": {
+        "root": "s3://multimodal-processed/Multi-3D-Object/GQA/",
+        "annotation": "/mnt/aigc/zoedatasets/mllm/trainset_jsonl/GQA/questions_jsonl/train_balanced_questions.jsonl",
+        "data_augment": false,
+        "max_dynamic_patch": 12,
+        "repeat_time": 0.5,
+        "length": 943000
+    },
+    "VQA": {
+        "root": "s3://multimodal-processed/Multi-3D-Object/VQA/",
+        "annotation": "/mnt/aigc/users/wangruisi/01-project/mllm/InternVL/internvl_chat/trainset_jsonl/VQA/questions_jsonl/vqa_train.jsonl",
+        "data_augment": false,
+        "max_dynamic_patch": 12,
+        "repeat_time": 0.1,
+        "length": 443757
+    },
+    "arkitscenes_base_obj_appearance_order.jsonl": {
+        "root": "s3://multimodal-processed/Multi-3D-Object/ViCA-322K/",
+        "annotation": "/mnt/aigc/zoedatasets/mllm/trainset_jsonl/ViCA-322K/questions_jsonl/arkitscenes_base_obj_appearance_order_reformat_question.jsonl",
+        "data_augment": false,
+        "max_dynamic_patch": 12,
+        "repeat_time": 1,
+        "length": 7230,
+        "status": "Fine. option is A, B, C, D. the gpt value is like A. {short phase}"
+    },
+    "arkitscenes_base_object_abs_distance.jsonl": {
+        "root": "s3://multimodal-processed/Multi-3D-Object/ViCA-322K/",
+        "annotation": "/mnt/aigc/zoedatasets/mllm/trainset_jsonl/ViCA-322K/questions_jsonl/arkitscenes_base_object_abs_distance.jsonl",
+        "data_augment": false,
+        "max_dynamic_patch": 12,
+        "repeat_time": 1,
+        "length": 21302,
+        "status": "Fine. no option, answer the distance between two objects. the gpt value is a float number"
+    },
+    "arkitscenes_base_object_count.jsonl": {
+        "root": "s3://multimodal-processed/Multi-3D-Object/ViCA-322K/",
+        "annotation": "/mnt/aigc/zoedatasets/mllm/trainset_jsonl/ViCA-322K/questions_jsonl/arkitscenes_base_object_count.jsonl",
+        "data_augment": false,
+        "max_dynamic_patch": 12,
+        "repeat_time": 1,
+        "length": 13616,
+        "status": "Fine. no option, answer the count number. the gpt value is an int number"
+    },
+    "arkitscenes_base_object_relative_distance.jsonl": {
+        "root": "s3://multimodal-processed/Multi-3D-Object/ViCA-322K/",
+        "annotation": "/mnt/aigc/zoedatasets/mllm/trainset_jsonl/ViCA-322K/questions_jsonl/arkitscenes_base_object_relative_distance_reformat_question.jsonl",
+        "data_augment": false,
+        "max_dynamic_patch": 12,
+        "repeat_time": 1,
+        "length": 6416,
+        "status": "Fine. ask which object is closer. option is A, B, C, D. the gpt value is like A. {phrase}"
+    },
+    "arkitscenes_base_object_size_estimation.jsonl": {
+        "root": "s3://multimodal-processed/Multi-3D-Object/ViCA-322K/",
+        "annotation": "/mnt/aigc/zoedatasets/mllm/trainset_jsonl/ViCA-322K/questions_jsonl/arkitscenes_base_object_size_estimation.jsonl",
+        "data_augment": false,
+        "max_dynamic_patch": 12,
+        "repeat_time": 1,
+        "length": 15217,
+        "status": "Fine. no option, answer the object size. the gpt value is an int number"
+    },
+    "arkitscenes_base_room_size.jsonl": {
+        "root": "s3://multimodal-processed/Multi-3D-Object/ViCA-322K/",
+        "annotation": "/mnt/aigc/zoedatasets/mllm/trainset_jsonl/ViCA-322K/questions_jsonl/arkitscenes_base_room_size.jsonl",
+        "data_augment": false,
+        "max_dynamic_patch": 12,
+        "repeat_time": 1,
+        "length": 4494,
+        "status": "Fine. no option, answer the room area. the gpt value is a float number"
+    },
+    "arkitscenes_base_triangular_positional_relationship.jsonl": {
+        "root": "s3://multimodal-processed/Multi-3D-Object/ViCA-322K/",
+        "annotation": "/mnt/aigc/zoedatasets/mllm/trainset_jsonl/ViCA-322K/questions_jsonl/arkitscenes_base_triangular_positional_relationship.jsonl",
+        "data_augment": false,
+        "max_dynamic_patch": 12,
+        "repeat_time": 1,
+        "length": 21707,
+        "status": "Fine. no option, describe the postion relationship in triangle. the gpt value is a short phrase like {The three points are positioned to form a triangle with side lengths of 2.5, 2.0, and 1.1 meters. The internal angles at each vertex are 51, 25, and 103 degrees.}"
+    },
+    "arkitscenes_complex_conversation.jsonl": {
+        "root": "s3://multimodal-processed/Multi-3D-Object/ViCA-322K/",
+        "annotation": "/mnt/aigc/zoedatasets/mllm/trainset_jsonl/ViCA-322K/questions_jsonl/arkitscenes_complex_conversation.jsonl",
+        "data_augment": false,
+        "max_dynamic_patch": 12,
+        "repeat_time": 1,
+        "length": 4495,
+        "status": "not Perfect. no option. 多轮对话, 每次对话回答一段, 没有固定范式"
+    },
+    "arkitscenes_complex_furniture.jsonl": {
+        "root": "s3://multimodal-processed/Multi-3D-Object/ViCA-322K/",
+        "annotation": "/mnt/aigc/zoedatasets/mllm/trainset_jsonl/ViCA-322K/questions_jsonl/arkitscenes_complex_furniture.jsonl",
+        "data_augment": false,
+        "max_dynamic_patch": 12,
+        "repeat_time": 1,
+        "length": 4495,
+        "status": "not Perfect. no option. 询问房间里是不是还能加一个家具, 回答了一段, 没有固定范式"
+    },
+    "arkitscenes_complex_important_daily_necessities.jsonl": {
+        "root": "s3://multimodal-processed/Multi-3D-Object/ViCA-322K/",
+        "annotation": "/mnt/aigc/zoedatasets/mllm/trainset_jsonl/ViCA-322K/questions_jsonl/arkitscenes_complex_important_daily_necessities.jsonl",
+        "data_augment": false,
+        "max_dynamic_patch": 12,
+        "repeat_time": 1,
+        "length": 4495,
+        "status": "not Perfect. no option. 询问房间里什么物体是日常生活里重要的, 回答了一段, 没有固定范式"
+    },
+    "arkitscenes_complex_spatial_description.jsonl": {
+        "root": "s3://multimodal-processed/Multi-3D-Object/ViCA-322K/",
+        "annotation": "/mnt/aigc/zoedatasets/mllm/trainset_jsonl/ViCA-322K/questions_jsonl/arkitscenes_complex_spatial_description.jsonl",
+        "data_augment": false,
+        "max_dynamic_patch": 12,
+        "repeat_time": 1,
+        "length": 4495,
+        "status": "not Perfect. no option. 假设你在一个房间里, 描述一下这个房间的布局和物体, 回答了一段, 没有固定范式"
+    },
+    "arkitscenes_complex_usage.jsonl": {
+        "root": "s3://multimodal-processed/Multi-3D-Object/ViCA-322K/",
+        "annotation": "/mnt/aigc/zoedatasets/mllm/trainset_jsonl/ViCA-322K/questions_jsonl/arkitscenes_complex_usage.jsonl",
+        "data_augment": false,
+        "max_dynamic_patch": 12,
+        "repeat_time": 1,
+        "length": 4495,
+        "status": "not Perfect. no option. 这个房间能容纳拿多少人? 房间的功能是什么? 怎么规划房间能发挥最大价值？, 回答了一段, 没有固定范式"
+    },
+    "arkitscenes_complex_wheelchair_user.jsonl": {
+        "root": "s3://multimodal-processed/Multi-3D-Object/ViCA-322K/",
+        "annotation": "/mnt/aigc/zoedatasets/mllm/trainset_jsonl/ViCA-322K/questions_jsonl/arkitscenes_complex_wheelchair_user.jsonl",
+        "data_augment": false,
+        "max_dynamic_patch": 12,
+        "repeat_time": 1,
+        "length": 4495,
+        "status": "not Perfect. no option. 坐轮椅的人能在这个房间里自由行动吗? 回答了一段, 没有固定范式"
+    },
+    "scannet_base_obj_appearance_order.jsonl": {
+        "root": "s3://multimodal-processed/Multi-3D-Object/ViCA-322K/",
+        "annotation": "/mnt/aigc/zoedatasets/mllm/trainset_jsonl/ViCA-322K/questions_jsonl/scannet_base_obj_appearance_order_reformat_question.jsonl",
+        "data_augment": false,
+        "max_dynamic_patch": 12,
+        "repeat_time": 1,
+        "length": 11860,
+        "status": "Fine. option is A, B, C, D. the gpt value is like A. {short phase}"
+    },
+    "scannet_base_object_abs_distance.jsonl": {
+        "root": "s3://multimodal-processed/Multi-3D-Object/ViCA-322K/",
+        "annotation": "/mnt/aigc/zoedatasets/mllm/trainset_jsonl/ViCA-322K/questions_jsonl/scannet_base_object_abs_distance.jsonl",
+        "data_augment": false,
+        "max_dynamic_patch": 12,
+        "repeat_time": 1,
+        "length": 54240,
+        "status": "Fine. no option, answer the distance between two objects. the gpt value is a float number"
+    },
+    "scannet_base_object_count.jsonl": {
+        "root": "s3://multimodal-processed/Multi-3D-Object/ViCA-322K/",
+        "annotation": "/mnt/aigc/zoedatasets/mllm/trainset_jsonl/ViCA-322K/questions_jsonl/scannet_base_object_count.jsonl",
+        "data_augment": false,
+        "max_dynamic_patch": 12,
+        "repeat_time": 1,
+        "length": 5356,
+        "status": "Fine. no option, answer the count number. the gpt value is an int number"
+    },
+    "scannet_base_object_relative_distance.jsonl": {
+        "root": "s3://multimodal-processed/Multi-3D-Object/ViCA-322K/",
+        "annotation": "/mnt/aigc/zoedatasets/mllm/trainset_jsonl/ViCA-322K/questions_jsonl/scannet_base_object_relative_distance_reformat_question.jsonl",
+        "data_augment": false,
+        "max_dynamic_patch": 12,
+        "repeat_time": 1,
+        "length": 4965,
+        "status": "Fine. ask which object is closer. option is A, B, C, D. the gpt value is like A. {phrase}"
+    },
+    "scannet_base_object_size_estimation.jsonl": {
+        "root": "s3://multimodal-processed/Multi-3D-Object/ViCA-322K/",
+        "annotation": "/mnt/aigc/zoedatasets/mllm/trainset_jsonl/ViCA-322K/questions_jsonl/scannet_base_object_size_estimation.jsonl",
+        "data_augment": false,
+        "max_dynamic_patch": 12,
+        "repeat_time": 1,
+        "length": 11658,
+        "status": "Fine. no option, answer the object largest dimension size. the gpt value is an int number"
+    },
+    "scannet_base_room_size.jsonl": {
+        "root": "s3://multimodal-processed/Multi-3D-Object/ViCA-322K/",
+        "annotation": "/mnt/aigc/zoedatasets/mllm/trainset_jsonl/ViCA-322K/questions_jsonl/scannet_base_room_size.jsonl",
+        "data_augment": false,
+        "max_dynamic_patch": 12,
+        "repeat_time": 1,
+        "length": 1425,
+        "status": "Fine. no option, answer the room area. the gpt value is a float number"
+    },
+    "scannet_complex_conversation.jsonl": {
+        "root": "s3://multimodal-processed/Multi-3D-Object/ViCA-322K/",
+        "annotation": "/mnt/aigc/zoedatasets/mllm/trainset_jsonl/ViCA-322K/questions_jsonl/scannet_complex_conversation.jsonl",
+        "data_augment": false,
+        "max_dynamic_patch": 12,
+        "repeat_time": 1,
+        "length": 1425,
+        "status": "not Perfect. no option. 多轮对话, 每次对话回答一段, 没有固定范式"
+    },
+    "scannet_complex_furniture.jsonl": {
+        "root": "s3://multimodal-processed/Multi-3D-Object/ViCA-322K/",
+        "annotation": "/mnt/aigc/zoedatasets/mllm/trainset_jsonl/ViCA-322K/questions_jsonl/scannet_complex_furniture.jsonl",
+        "data_augment": false,
+        "max_dynamic_patch": 12,
+        "repeat_time": 1,
+        "length": 1425,
+        "status": "not Perfect. no option. 询问房间里是不是还能加一个家具, 回答了一段, 没有固定范式"
+    },
+    "scannet_complex_important_daily_necessities.jsonl": {
+        "root": "s3://multimodal-processed/Multi-3D-Object/ViCA-322K/",
+        "annotation": "/mnt/aigc/zoedatasets/mllm/trainset_jsonl/ViCA-322K/questions_jsonl/scannet_complex_important_daily_necessities.jsonl",
+        "data_augment": false,
+        "max_dynamic_patch": 12,
+        "repeat_time": 1,
+        "length": 1425,
+        "status": "not Perfect. no option. 询问房间里什么物体是日常生活里重要的, 回答了一段, 没有固定范式"
+    },
+    "scannet_complex_spatial_description.jsonl": {
+        "root": "s3://multimodal-processed/Multi-3D-Object/ViCA-322K/",
+        "annotation": "/mnt/aigc/zoedatasets/mllm/trainset_jsonl/ViCA-322K/questions_jsonl/scannet_complex_spatial_description.jsonl",
+        "data_augment": false,
+        "max_dynamic_patch": 12,
+        "repeat_time": 1,
+        "length": 1425,
+        "status": "not Perfect. no option. 假设你在一个房间里, 描述一下这个房间的布局和物体, 回答了一段, 没有固定范式"
+    },
+    "scannet_complex_usage.jsonl": {
+        "root": "s3://multimodal-processed/Multi-3D-Object/ViCA-322K/",
+        "annotation": "/mnt/aigc/zoedatasets/mllm/trainset_jsonl/ViCA-322K/questions_jsonl/scannet_complex_usage.jsonl",
+        "data_augment": false,
+        "max_dynamic_patch": 12,
+        "repeat_time": 1,
+        "length": 1425,
+        "status": "not Perfect. no option. 这个房间能容纳拿多少人? 房间的功能是什么? 怎么规划房间能发挥最大价值？, 回答了一段, 没有固定范式"
+    },
+    "scannet_complex_wheelchair_user.jsonl": {
+        "root": "s3://multimodal-processed/Multi-3D-Object/ViCA-322K/",
+        "annotation": "/mnt/aigc/zoedatasets/mllm/trainset_jsonl/ViCA-322K/questions_jsonl/scannet_complex_wheelchair_user.jsonl",
+        "data_augment": false,
+        "max_dynamic_patch": 12,
+        "repeat_time": 1,
+        "length": 1425,
+        "status": "not Perfect. no option. 坐轮椅的人能在这个房间里自由行动吗? 回答了一段, 没有固定范式"
+    },
+    "scannetpp_base_obj_appearance_order.jsonl": {
+        "root": "s3://multimodal-processed/Multi-3D-Object/ViCA-322K/",
+        "annotation": "/mnt/aigc/zoedatasets/mllm/trainset_jsonl/ViCA-322K/questions_jsonl/scannetpp_base_obj_appearance_order_reformat_question.jsonl",
+        "data_augment": false,
+        "max_dynamic_patch": 12,
+        "repeat_time": 1,
+        "length": 8200,
+        "status": "Fine. option is A, B, C, D. the gpt value is like A. {short phase}"
+    },
+    "scannetpp_base_object_abs_distance.jsonl": {
+        "root": "s3://multimodal-processed/Multi-3D-Object/ViCA-322K/",
+        "annotation": "/mnt/aigc/zoedatasets/mllm/trainset_jsonl/ViCA-322K/questions_jsonl/scannetpp_base_object_abs_distance.jsonl",
+        "data_augment": false,
+        "max_dynamic_patch": 12,
+        "repeat_time": 1,
+        "length": 57219,
+        "status": "Fine. no option, answer the distance between two objects. the gpt value is a float number"
+    },
+    "scannetpp_base_object_count.jsonl": {
+        "root": "s3://multimodal-processed/Multi-3D-Object/ViCA-322K/",
+        "annotation": "/mnt/aigc/zoedatasets/mllm/trainset_jsonl/ViCA-322K/questions_jsonl/scannetpp_base_object_count.jsonl",
+        "data_augment": false,
+        "max_dynamic_patch": 12,
+        "repeat_time": 1,
+        "length": 11580,
+        "status": "Fine. no option, answer the count number. the gpt value is an int number"
+    },
+    "scannetpp_base_object_relative_distance.jsonl": {
+        "root": "s3://multimodal-processed/Multi-3D-Object/ViCA-322K/",
+        "annotation": "/mnt/aigc/zoedatasets/mllm/trainset_jsonl/ViCA-322K/questions_jsonl/scannetpp_base_object_relative_distance_reformat_question.jsonl",
+        "data_augment": false,
+        "max_dynamic_patch": 12,
+        "repeat_time": 1,
+        "length": 5052,
+        "status": "Fine. ask which object is closer. option is A, B, C, D. the gpt value is like A. {phrase}"
+    },
+    "scannetpp_base_object_size_estimation.jsonl": {
+        "root": "s3://multimodal-processed/Multi-3D-Object/ViCA-322K/",
+        "annotation": "/mnt/aigc/zoedatasets/mllm/trainset_jsonl/ViCA-322K/questions_jsonl/scannetpp_base_object_size_estimation.jsonl",
+        "data_augment": false,
+        "max_dynamic_patch": 12,
+        "repeat_time": 1,
+        "length": 18968,
+        "status": "Fine. no option, answer the object largest dimension size. the gpt value is an int number"
+    },
+    "scannetpp_base_room_size.jsonl": {
+        "root": "s3://multimodal-processed/Multi-3D-Object/ViCA-322K/",
+        "annotation": "/mnt/aigc/zoedatasets/mllm/trainset_jsonl/ViCA-322K/questions_jsonl/scannetpp_base_room_size.jsonl",
+        "data_augment": false,
+        "max_dynamic_patch": 12,
+        "repeat_time": 1,
+        "length": 854,
+        "status": "Fine. no option, answer the room area. the gpt value is a float number"
+    },
+    "scannetpp_complex_conversation.jsonl": {
+        "root": "s3://multimodal-processed/Multi-3D-Object/ViCA-322K/",
+        "annotation": "/mnt/aigc/zoedatasets/mllm/trainset_jsonl/ViCA-322K/questions_jsonl/scannetpp_complex_conversation.jsonl",
+        "data_augment": false,
+        "max_dynamic_patch": 12,
+        "repeat_time": 1,
+        "length": 854,
+        "status": "not Perfect. no option. 多轮对话, 每次对话回答一段, 没有固定范式"
+    },
+    "scannetpp_complex_furniture.jsonl": {
+        "root": "s3://multimodal-processed/Multi-3D-Object/ViCA-322K/",
+        "annotation": "/mnt/aigc/zoedatasets/mllm/trainset_jsonl/ViCA-322K/questions_jsonl/scannetpp_complex_furniture.jsonl",
+        "data_augment": false,
+        "max_dynamic_patch": 12,
+        "repeat_time": 1,
+        "length": 854,
+        "status": "not Perfect. no option. 询问房间里是不是还能加一个家具, 回答了一段, 没有固定范式"
+    },
+    "scannetpp_complex_important_daily_necessities.jsonl": {
+        "root": "s3://multimodal-processed/Multi-3D-Object/ViCA-322K/",
+        "annotation": "/mnt/aigc/zoedatasets/mllm/trainset_jsonl/ViCA-322K/questions_jsonl/scannetpp_complex_important_daily_necessities.jsonl",
+        "data_augment": false,
+        "max_dynamic_patch": 12,
+        "repeat_time": 1,
+        "length": 854,
+        "status": "not Perfect. no option. 询问房间里什么物体是日常生活里重要的, 回答了一段, 没有固定范式"
+    },
+    "scannetpp_complex_spatial_description.jsonl": {
+        "root": "s3://multimodal-processed/Multi-3D-Object/ViCA-322K/",
+        "annotation": "/mnt/aigc/zoedatasets/mllm/trainset_jsonl/ViCA-322K/questions_jsonl/scannetpp_complex_spatial_description.jsonl",
+        "data_augment": false,
+        "max_dynamic_patch": 12,
+        "repeat_time": 1,
+        "length": 854,
+        "status": "not Perfect. no option. 假设你在一个房间里, 描述一下这个房间的布局和物体, 回答了一段, 没有固定范式"
+    },
+    "scannetpp_complex_usage.jsonl": {
+        "root": "s3://multimodal-processed/Multi-3D-Object/ViCA-322K/",
+        "annotation": "/mnt/aigc/zoedatasets/mllm/trainset_jsonl/ViCA-322K/questions_jsonl/scannetpp_complex_usage.jsonl",
+        "data_augment": false,
+        "max_dynamic_patch": 12,
+        "repeat_time": 1,
+        "length": 854,
+        "status": "not Perfect. no option. 这个房间能容纳拿多少人? 房间的功能是什么? 怎么规划房间能发挥最大价值？, 回答了一段, 没有固定范式"
+    },
+    "scannetpp_complex_wheelchair_user.jsonl": {
+        "root": "s3://multimodal-processed/Multi-3D-Object/ViCA-322K/",
+        "annotation": "/mnt/aigc/zoedatasets/mllm/trainset_jsonl/ViCA-322K/questions_jsonl/scannetpp_complex_wheelchair_user.jsonl",
+        "data_augment": false,
+        "max_dynamic_patch": 12,
+        "repeat_time": 1,
+        "length": 854,
+        "status": "not Perfect. no option. 坐轮椅的人能在这个房间里自由行动吗? 回答了一段, 没有固定范式"
+    },
+    "vica_thinking.jsonl": {
+        "root": "s3://multimodal-processed/Multi-3D-Object/ViCA-322K/",
+        "annotation": "/mnt/aigc/zoedatasets/mllm/trainset_jsonl/ViCA-322K/questions_jsonl/vica_thinking.jsonl",
+        "data_augment": false,
+        "max_dynamic_patch": 12,
+        "repeat_time": 1,
+        "length": 2680,
+        "status": "上面的非complex的问题混合, 加了Enclose your thinking process in <think> </think> tags and your final answer in <answer> </answer>."
+    },
+    "vlm_3r_general": {
+        "root": "s3://multimodal-processed/Multi-3D-Object/MultiSpa",
+        "annotation": "/mnt/aigc/xujunxiang/Data/vlm-3r/vlm_3r_vsibench_scannet.jsonl",
+        "data_augment": false,
+        "max_dynamic_patch": 12,
+        "repeat_time": 1,
+        "length": 51779
+    },
+    "vlm_3r_route_plan": {
+        "root": "s3://multimodal-processed/Multi-3D-Object/MultiSpa",
+        "annotation": "/mnt/aigc/xujunxiang/Data/vlm-3r/vlm_3r_vsibench_route_plan_reformat_question.jsonl",
+        "data_augment": false,
+        "max_dynamic_patch": 12,
+        "repeat_time": 3,
+        "length": 2042
+    }
+}

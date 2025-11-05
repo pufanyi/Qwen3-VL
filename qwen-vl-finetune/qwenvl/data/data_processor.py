@@ -4,10 +4,14 @@ import logging
 import re
 import time
 import itertools
+import hashlib
+import os
+import tempfile
 from dataclasses import dataclass, field
 from typing import Dict, Optional, Sequence, List, Tuple, Any
 from collections.abc import Sequence
 from pathlib import Path
+from urllib.parse import urlparse
 
 import numpy as np
 import torch
@@ -17,6 +21,7 @@ import transformers
 
 from . import data_list
 from .rope2d import get_rope_index_25, get_rope_index_2, get_rope_index_3
+from utils.storage_clients import PatternAOSSClient
 
 IGNORE_INDEX = -100
 IMAGE_TOKEN_INDEX = 151655
@@ -37,8 +42,159 @@ def read_jsonl(path):
         return [json.loads(line) for line in f]
 
 
-def _make_abs_paths(base: Path, files: str) -> str:
-    return f"{(base / files).resolve()}"
+_REMOTE_SCHEMES = {"http", "https", "s3"}
+_DEFAULT_CACHE_SUBDIR = "qwenvl_media_cache"
+
+
+def _is_remote_path(path: str) -> bool:
+    if not path:
+        return False
+    parsed = urlparse(path)
+    return parsed.scheme in _REMOTE_SCHEMES
+
+
+def _ensure_cache_dir(cache_dir: Optional[str]) -> Path:
+    if cache_dir:
+        cache_path = Path(cache_dir).expanduser()
+    else:
+        cache_path = Path(tempfile.gettempdir()) / _DEFAULT_CACHE_SUBDIR
+    cache_path.mkdir(parents=True, exist_ok=True)
+    return cache_path
+
+
+def _download_remote_file(uri: str, storage_client, cache_dir: Optional[str]) -> str:
+    if storage_client is None or not uri.startswith("s3://"):
+        return uri
+
+    cache_dir_path = _ensure_cache_dir(cache_dir)
+    file_ext = Path(uri).suffix
+    hashed_name = hashlib.sha256(uri.encode("utf-8")).hexdigest()
+    target_path = cache_dir_path / f"{hashed_name}{file_ext}"
+
+    if not target_path.exists():
+        try:
+            data = storage_client.get(uri)
+        except Exception as exc:
+            raise RuntimeError(f"Failed to fetch remote media '{uri}': {exc}") from exc
+        target_path.write_bytes(data)
+
+    return str(target_path)
+
+
+def _make_abs_paths(base: str, files: str, *, storage_client=None, cache_dir: Optional[str] = None) -> str:
+    if not files:
+        return ""
+
+    if _is_remote_path(files):
+        return _download_remote_file(files, storage_client, cache_dir)
+
+    if _is_remote_path(base):
+        base = base.rstrip("/")
+        combined = f"{base}/{files.lstrip('/')}"
+        return _download_remote_file(combined, storage_client, cache_dir)
+
+    base_path = Path(base).expanduser()
+    file_path = Path(files).expanduser()
+
+    if file_path.is_absolute():
+        return str(file_path)
+
+    resolved = (base_path / file_path).resolve()
+    if storage_client and str(resolved).startswith("s3://"):
+        return _download_remote_file(str(resolved), storage_client, cache_dir)
+    return str(resolved)
+
+
+def _parse_aoss_rules(raw_rules) -> Optional[List[Tuple[str, str]]]:
+    if not raw_rules:
+        return None
+
+    if isinstance(raw_rules, str):
+        text = raw_rules.strip()
+        if not text:
+            return None
+        try:
+            parsed = json.loads(text)
+        except json.JSONDecodeError:
+            rules: List[Tuple[str, str]] = []
+            for chunk in text.split(";;"):
+                chunk = chunk.strip()
+                if not chunk:
+                    continue
+                if "::" in chunk:
+                    pattern, conf_path = chunk.split("::", 1)
+                elif "=" in chunk:
+                    pattern, conf_path = chunk.split("=", 1)
+                else:
+                    raise ValueError(
+                        f"Invalid AOSS rule entry '{chunk}'. Expected 'pattern::conf_path'."
+                    )
+                rules.append((pattern.strip(), conf_path.strip()))
+            return rules or None
+        else:
+            rules: List[Tuple[str, str]] = []
+            if isinstance(parsed, list):
+                for item in parsed:
+                    if isinstance(item, dict):
+                        pattern = item.get("pattern")
+                        conf_path = item.get("conf_path")
+                    elif (
+                        isinstance(item, (list, tuple))
+                        and len(item) == 2
+                    ):
+                        pattern, conf_path = item
+                    else:
+                        continue
+                    if pattern and conf_path:
+                        rules.append((str(pattern), str(conf_path)))
+                return rules or None
+            if isinstance(parsed, dict):
+                pattern = parsed.get("pattern")
+                conf_path = parsed.get("conf_path")
+                if pattern and conf_path:
+                    return [(str(pattern), str(conf_path))]
+            raise ValueError(
+                "aoss_conf_rules JSON must be a list of objects or an object with 'pattern' and 'conf_path'."
+            )
+
+    if isinstance(raw_rules, Sequence):
+        rules: List[Tuple[str, str]] = []
+        for item in raw_rules:
+            if isinstance(item, dict):
+                pattern = item.get("pattern")
+                conf_path = item.get("conf_path")
+            elif isinstance(item, (list, tuple)) and len(item) == 2:
+                pattern, conf_path = item
+            else:
+                continue
+            if pattern and conf_path:
+                rules.append((str(pattern), str(conf_path)))
+        return rules or None
+
+    return None
+
+
+def _sample_contains_remote_media(sample: Dict[str, Any]) -> bool:
+    def _check(value) -> bool:
+        if isinstance(value, str):
+            return _is_remote_path(value)
+        if isinstance(value, list):
+            return any(_check(v) for v in value)
+        if isinstance(value, dict):
+            return any(_check(v) for v in value.values())
+        return False
+
+    if not isinstance(sample, dict):
+        return False
+
+    if _check(sample.get("data_path")):
+        return True
+    if _check(sample.get("image")) or _check(sample.get("images")):
+        return True
+    if _check(sample.get("video")) or _check(sample.get("videos")):
+        return True
+
+    return False
 
 
 def update_processor_pixels(processor, data_args):
@@ -137,7 +293,13 @@ def update_processor_pixels(processor, data_args):
     return processor
 
 
-def _build_messages(item: Dict[str, Any], base_path: Path) -> List[Dict[str, Any]]:
+def _build_messages(
+    item: Dict[str, Any],
+    base_path: str,
+    *,
+    storage_client=None,
+    cache_dir: Optional[str] = None,
+) -> List[Dict[str, Any]]:
     # Extract and normalize images and videos
     images = item.get("image") or []
     if isinstance(images, str):
@@ -149,10 +311,22 @@ def _build_messages(item: Dict[str, Any], base_path: Path) -> List[Dict[str, Any
 
     # Build media pools with absolute paths
     image_pool = [
-        {"type": "image", "image": _make_abs_paths(base_path, img)} for img in images
+        {
+            "type": "image",
+            "image": _make_abs_paths(
+                base_path, img, storage_client=storage_client, cache_dir=cache_dir
+            ),
+        }
+        for img in images
     ]
     video_pool = [
-        {"type": "video", "video": _make_abs_paths(base_path, vid)} for vid in videos
+        {
+            "type": "video",
+            "video": _make_abs_paths(
+                base_path, vid, storage_client=storage_client, cache_dir=cache_dir
+            ),
+        }
+        for vid in videos
     ]
 
     messages = []
@@ -202,13 +376,21 @@ def _build_messages(item: Dict[str, Any], base_path: Path) -> List[Dict[str, Any
 def preprocess_qwen_visual(
     sources,
     processor,
+    *,
+    storage_client=None,
+    cache_dir: Optional[str] = None,
 ) -> Dict:
     if len(sources) != 1:
         raise ValueError(f"Expected 1 source, got {len(sources)}")
 
     source = sources[0]
-    base_path = Path(source.get("data_path", ""))
-    messages = _build_messages(source, base_path)
+    base_path = source.get("data_path", "")
+    messages = _build_messages(
+        source,
+        base_path,
+        storage_client=storage_client,
+        cache_dir=cache_dir,
+    )
 
     full_result = processor.apply_chat_template(
         messages, tokenize=True, return_dict=True, return_tensors="pt"
@@ -302,6 +484,51 @@ class LazySupervisedDataset(Dataset):
         self.merge_size = getattr(processor.image_processor, "merge_size", 2)
         self.list_data_dict = list_data_dict
 
+        raw_conf_path = getattr(self.data_args, "aoss_conf_path", None) or os.getenv(
+            "AOSS_CONF_PATH"
+        )
+        raw_rules = getattr(self.data_args, "aoss_conf_rules", None) or os.getenv(
+            "AOSS_CONF_RULES"
+        )
+        pattern_rules = _parse_aoss_rules(raw_rules)
+        self.media_cache_dir = getattr(self.data_args, "media_cache_dir", None) or os.getenv(
+            "QWENVL_MEDIA_CACHE"
+        )
+
+        remote_required = any(
+            _sample_contains_remote_media(sample) for sample in self.list_data_dict
+        )
+
+        self.storage_client = None
+        should_init_storage = remote_required or raw_conf_path or pattern_rules
+        if should_init_storage:
+            try:
+                self.storage_client = PatternAOSSClient(raw_conf_path, pattern_rules)
+            except ImportError as exc:
+                if remote_required:
+                    raise ImportError(
+                        "AOSS client requested for remote media but aoss-client is not installed."
+                    ) from exc
+                rank0_print("AOSS client not installed; continuing without remote storage support.")
+            except Exception as exc:
+                if remote_required:
+                    raise RuntimeError(
+                        f"Failed to initialize AOSS storage client: {exc}"
+                    ) from exc
+                rank0_print(f"Warning: failed to initialize AOSS storage client ({exc}); continuing without it.")
+
+        if remote_required and self.storage_client is None:
+            raise RuntimeError(
+                "Detected remote media (e.g., s3 URIs) but no AOSS storage client is configured. "
+                "Please provide --aoss_conf_path/--aoss_conf_rules or set AOSS_CONF_PATH/AOSS_CONF_RULES."
+            )
+
+        if self.storage_client:
+            rank0_print(
+                f"AOSS storage client ready. Media cache directory: "
+                f"{self.media_cache_dir or '<system temp>'}"
+            )
+
         if data_args.data_packing:
             self.item_fn = self._get_packed_item
         else:
@@ -391,6 +618,8 @@ class LazySupervisedDataset(Dataset):
         data_dict = preprocess_qwen_visual(
             sources,
             self.processor,
+            storage_client=self.storage_client,
+            cache_dir=self.media_cache_dir,
         )
 
         seq_len = data_dict["input_ids"][0].size(0)
