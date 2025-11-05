@@ -8,7 +8,7 @@ import hashlib
 import os
 import tempfile
 from dataclasses import dataclass, field
-from typing import Dict, Optional, Sequence, List, Tuple, Any
+from typing import Dict, Optional, Sequence, List, Tuple, Any, Set
 from collections.abc import Sequence
 from pathlib import Path
 from urllib.parse import urlparse
@@ -76,7 +76,28 @@ def _download_remote_file(uri: str, storage_client, cache_dir: Optional[str]) ->
             data = storage_client.get(uri)
         except Exception as exc:
             raise RuntimeError(f"Failed to fetch remote media '{uri}': {exc}") from exc
-        target_path.write_bytes(data)
+
+        if data is None:
+            raise FileNotFoundError(f"Remote media not found or empty: {uri}")
+
+        if isinstance(data, memoryview):
+            data_bytes = data.tobytes()
+        elif isinstance(data, (bytes, bytearray)):
+            data_bytes = bytes(data)
+        elif hasattr(data, "read"):
+            data_bytes = data.read()
+        elif isinstance(data, str):
+            # Treat textual response as UTF-8 bytes to avoid crashes; remote assets should not be text.
+            data_bytes = data.encode("utf-8")
+        else:
+            raise TypeError(
+                f"Unsupported object type '{type(data)!r}' returned for remote media '{uri}'"
+            )
+
+        if data_bytes is None:
+            raise RuntimeError(f"Remote media '{uri}' returned no data.")
+
+        target_path.write_bytes(data_bytes)
 
     return str(target_path)
 
@@ -310,24 +331,28 @@ def _build_messages(
         videos = [videos]
 
     # Build media pools with absolute paths
-    image_pool = [
-        {
-            "type": "image",
-            "image": _make_abs_paths(
+    image_pool = []
+    for img in images:
+        try:
+            resolved = _make_abs_paths(
                 base_path, img, storage_client=storage_client, cache_dir=cache_dir
-            ),
-        }
-        for img in images
-    ]
-    video_pool = [
-        {
-            "type": "video",
-            "video": _make_abs_paths(
+            )
+            image_pool.append({"type": "image", "image": resolved})
+        except FileNotFoundError as exc:
+            raise FileNotFoundError(
+                f"Image asset missing for '{img}' (base '{base_path}'): {exc}"
+            ) from exc
+
+    video_pool = []
+    skipped_videos: List[Tuple[str, Exception]] = []
+    for vid in videos:
+        try:
+            resolved = _make_abs_paths(
                 base_path, vid, storage_client=storage_client, cache_dir=cache_dir
-            ),
-        }
-        for vid in videos
-    ]
+            )
+            video_pool.append({"type": "video", "video": resolved})
+        except FileNotFoundError as exc:
+            skipped_videos.append((vid, exc))
 
     messages = []
     for turn in item["conversations"]:
@@ -348,8 +373,13 @@ def _build_messages(
                     content.append(image_pool.pop(0))
                 elif seg == "<video>":
                     if not video_pool:
-                        raise ValueError(
-                            "Number of <video> placeholders exceeds the number of provided videos"
+                        if skipped_videos:
+                            missing_list = ", ".join(v for v, _ in skipped_videos)
+                            detail = f" Missing video files: {missing_list}."
+                        else:
+                            detail = ""
+                        raise FileNotFoundError(
+                            "Number of <video> placeholders exceeds the number of provided videos." + detail
                         )
                     content.append(video_pool.pop(0))
                 elif seg.strip():
@@ -365,10 +395,22 @@ def _build_messages(
         raise ValueError(
             f"{len(image_pool)} image(s) remain unused (not consumed by placeholders)"
         )
-    if video_pool:
+    human_text = "".join(
+        conv["value"] for conv in item["conversations"] if conv["from"] == "human"
+    )
+    has_video_placeholder = "<video>" in human_text
+
+    if video_pool and has_video_placeholder:
         raise ValueError(
             f"{len(video_pool)} video(s) remain unused (not consumed by placeholders)"
         )
+
+    if skipped_videos and has_video_placeholder:
+        missing_list = ", ".join(f"{vid} ({err})" for vid, err in skipped_videos)
+        raise FileNotFoundError(
+            f"One or more referenced videos could not be fetched: {missing_list}"
+        )
+
 
     return messages
 
@@ -483,6 +525,7 @@ class LazySupervisedDataset(Dataset):
         self.data_args = data_args
         self.merge_size = getattr(processor.image_processor, "merge_size", 2)
         self.list_data_dict = list_data_dict
+        self._invalid_sample_indices: Set[int] = set()
 
         raw_conf_path = getattr(self.data_args, "aoss_conf_path", None) or os.getenv(
             "AOSS_CONF_PATH"
@@ -570,49 +613,93 @@ class LazySupervisedDataset(Dataset):
             print("No pre-calculated length available.")
             return np.array([1] * len(self.list_data_dict))
 
-    def __getitem__(self, i) -> Dict[str, torch.Tensor]:
+    def _fetch_with_retries(self, index: int) -> Dict[str, torch.Tensor]:
         num_base_retries = 3
-        num_final_retries = 30
+        last_exception: Optional[Exception] = None
 
         # try the current sample first
         for attempt_idx in range(num_base_retries):
             try:
-                sources = self.list_data_dict[i]
+                sources = self.list_data_dict[index]
                 if isinstance(sources, dict):
                     sources = [sources]
                 sample = self.item_fn(sources)
                 return sample
+            except FileNotFoundError:
+                raise
             except Exception as e:
+                last_exception = e
                 # sleep 1s in case it is a cloud disk issue
-                print(f"[Try #{attempt_idx}] Failed to fetch sample {i}. Exception:", e)
+                print(f"[Try #{attempt_idx}] Failed to fetch sample {index}. Exception:", e)
                 time.sleep(1)
 
         # try other samples, in case it is file corruption issue
-        for attempt_idx in range(num_base_retries):
-            try:
-                next_index = min(i + 1, len(self.list_data_dict) - 1)
-                sources = self.list_data_dict[next_index]
-                if isinstance(sources, dict):
-                    sources = [sources]
+        next_index = min(index + 1, len(self.list_data_dict) - 1)
+        if next_index != index:
+            for attempt_idx in range(num_base_retries):
+                try:
+                    sources = self.list_data_dict[next_index]
+                    if isinstance(sources, dict):
+                        sources = [sources]
 
-                sample = self.item_fn(sources)
-                return sample
-            except Exception as e:
-                # no need to sleep
-                print(
-                    f"[Try other #{attempt_idx}] Failed to fetch sample {next_index}. Exception:",
-                    e,
-                )
-                pass
+                    sample = self.item_fn(sources)
+                    return sample
+                except FileNotFoundError:
+                    raise
+                except Exception as e:
+                    last_exception = e
+                    # no need to sleep
+                    print(
+                        f"[Try other #{attempt_idx}] Failed to fetch sample {next_index}. Exception:",
+                        e,
+                    )
 
+        # Final attempt on the original sample; propagate any exception.
+        sources = self.list_data_dict[index]
+        if isinstance(sources, dict):
+            sources = [sources]
         try:
-            sources = self.list_data_dict[i]
-            if isinstance(sources, dict):
-                sources = [sources]
             sample = self.item_fn(sources)
             return sample
         except Exception as e:
             raise e
+
+    def __getitem__(self, i) -> Dict[str, torch.Tensor]:
+        dataset_size = len(self.list_data_dict)
+        if dataset_size == 0:
+            raise IndexError("Dataset is empty.")
+
+        idx = i % dataset_size
+        checked: Set[int] = set()
+        last_missing_error: Optional[FileNotFoundError] = None
+
+        while len(checked) < dataset_size:
+            if idx in checked or idx in self._invalid_sample_indices:
+                checked.add(idx)
+                idx = (idx + 1) % dataset_size
+                continue
+
+            try:
+                return self._fetch_with_retries(idx)
+            except FileNotFoundError as err:
+                import traceback
+                traceback.print_exc()
+                self._invalid_sample_indices.add(idx)
+                checked.add(idx)
+                last_missing_error = err
+                print(f"data_dict: {self.list_data_dict[idx]}")
+                print(f"[Skip] Missing remote media for sample {idx}: {err}")
+                idx = (idx + 1) % dataset_size
+                continue
+
+        if last_missing_error:
+            raise RuntimeError(
+                "Exhausted dataset because all candidate samples are missing remote media."
+            ) from last_missing_error
+
+        raise RuntimeError(
+            "Unable to fetch dataset sample after exhausting retry attempts."
+        )
 
     def _get_item(self, sources) -> Dict[str, torch.Tensor]:
         data_dict = preprocess_qwen_visual(

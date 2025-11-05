@@ -124,9 +124,9 @@ torchrun \
     --aoss_conf_rules "${AOSS_CONF_RULES}" \
     --media_cache_dir "${MEDIA_CACHE_DIR}" \
     --bf16 \
-    --per_device_train_batch_size 4 \
-    --gradient_accumulation_steps 4 \
-    --learning_rate 2e-7 \
+    --per_device_train_batch_size 1 \
+    --gradient_accumulation_steps 8 \
+    --learning_rate 5e-6 \
     --mm_projector_lr 1e-5 \
     --vision_tower_lr 1e-6 \
     --optim adamw_torch \
@@ -136,7 +136,7 @@ torchrun \
     --max_pixels $((576*28*28)) \
     --min_pixels $((16*28*28)) \
     --video_fps 2 \
-    --video_max_frames 8 \
+    --video_max_frames 16 \
     --video_min_frames 4 \
     --video_max_pixels $((1664*28*28)) \
     --video_min_pixels $((256*28*28)) \
@@ -146,7 +146,7 @@ torchrun \
     --weight_decay 0.01 \
     --logging_steps 10 \
     --save_steps 500 \
-    --save_total_limit 3
+    --save_total_limit 100
 
 #  # LoRA Config (disabled by default)
 #  --lora_enable True \
