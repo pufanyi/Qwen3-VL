@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Complete QwenVL Training Launch Script with Full Parameter Documentation
 
-WORKER_NODES=1
+WORKER_NODES=4
 RANK=${RANK:-0}
 WORLD_SIZE=${WORLD_SIZE:-1}
 
@@ -36,8 +36,8 @@ fi
 # Path Configuration
 # ======================
 MODEL_PATH="Qwen/Qwen3-VL-2B-Instruct"           # Pretrained model path
-OUTPUT_DIR="./checkpoints"                       # Directory for saving checkpoints
-CACHE_DIR="./cache"                              # Cache directory for models
+OUTPUT_DIR="./checkpoints_2"                       # Directory for saving checkpoints
+CACHE_DIR="./cache_2"                              # Cache directory for models
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"
 TRAIN_SCRIPT="${ROOT_DIR}/qwen-vl-finetune/qwenvl/train/train_qwen.py"

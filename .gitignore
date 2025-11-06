@@ -2,3 +2,6 @@ __pycache__/
 .venv/
 cache/
 aoss
+checkpoints
+checkpoints_2
+cache_2
